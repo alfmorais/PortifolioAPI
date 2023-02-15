@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "portifolioapi"
+version = "0.1.0"
+description = "Portifolio Desenvolvedor Backend"
+authors = ["alfmorais <alfredneto@hotmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Django = "^4.1.6"
+djangorestframework = "^3.14.0"
+django-jazzmin = "^2.6.0"
+markdown = "^3.4.1"
+django-filter = "^22.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
