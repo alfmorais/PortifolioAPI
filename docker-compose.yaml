@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7
+    healthcheck:
+      test: "exit 0"
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    environment:
+      - MYSQL_DATABASE=portifolio
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_ROOT_HOST=%
+    volumes:
+      - mysql-db:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  redis:
+    image: redis:4.0.1-alpine
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379"
+  
+  # TODO ISSUE#9: verificar condição para subir o worker precisa do celery_app?
+  #worker:
+  #  build:
+  #    context: .
+  #    dockerfile: Dockerfile
+  #  command: celery -A celery_app worker -l info
+  #  volumes:
+  #    - .:/code
+  #  links:
+  #    - redis
+  #  depends_on:
+  #    redis:
+  #      condition: service_started
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    command: django-admin runserver 0.0.0.0:8000
+    # environment: *environment
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    links:
+      - redis
+    depends_on:
+      - redis
+      - db
+
+volumes:
+  mysql-db:
+  redis-data:
