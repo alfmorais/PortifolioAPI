@@ -1,6 +1,7 @@
-FROM python:3.10.10-slim-buster
+FROM python:3
 
-ENV PYTHONUMBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=${PYTHONPATH}:${PWD}
 
 RUN apt-get update && apt-get install -y \
@@ -17,7 +18,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN apt-get clean && apt-get remove
 
-WORKDIR /api/
+WORKDIR /code/
 
 COPY pyproject.toml ./
 
@@ -26,3 +27,4 @@ RUN poetry config virtualenvs.create false
 RUN --mount=type=ssh poetry install
 
 COPY . /code/
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
